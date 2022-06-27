@@ -1,18 +1,25 @@
 package br.com.alura.ecommerce;
 
+import java.util.HashMap;
 import java.util.Random;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
-public class DetectorFraudService {
+public class FraudDetectorService {
 
+	@SuppressWarnings("rawtypes")
 	public static void main(String[] args) throws InterruptedException {
-		try (KaflaService kaflaService = new KaflaService(DetectorFraudService.class.getSimpleName(), "LOJA_NOVO_PEDIDO", new DetectorFraudService()::parse)) {
+		try (KafkaService kaflaService = new KafkaService<Order>(
+				FraudDetectorService.class.getSimpleName(), 
+				"LOJA_NOVO_PEDIDO", 
+				new FraudDetectorService()::parse,
+				Order.class, 
+				new HashMap<>())) {
 			kaflaService.run();
 		}
 	}
 
-	private void parse(ConsumerRecord<String, String> registro) {
+	private void parse(ConsumerRecord<String, Order> registro) {
 		try {
 			System.out.println("--------------------- NOVO REGISTRO ---------------------");
 			System.out.println("CHECANDO POR FRAUDE");

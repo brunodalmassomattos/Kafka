@@ -1,16 +1,24 @@
 package br.com.alura.ecommerce;
 
+import java.util.HashMap;
+
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 public class EmailService {
 
+	@SuppressWarnings("rawtypes")
 	public static void main(String[] args) throws InterruptedException {
-		try (KaflaService kafkaService = new KaflaService(EmailService.class.getSimpleName(), "LOJA_EMAIL_PEDIDO", new EmailService()::parse)) {
+		try (KafkaService kafkaService = new KafkaService<Email>(
+				EmailService.class.getSimpleName(), 
+				"LOJA_EMAIL_PEDIDO", 
+				new EmailService()::parse,
+				Email.class,
+				new HashMap<>())) {
 			kafkaService.run();
 		}
 	}
 
-	private void parse(ConsumerRecord<String, String> registro) {
+	private void parse(ConsumerRecord<String, Email> registro) {
 		try {
 			System.out.println("--------------------- NOVO REGISTRO ---------------------");
 			System.out.println("ENVIANDO EMAIL");
