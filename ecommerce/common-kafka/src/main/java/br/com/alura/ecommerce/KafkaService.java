@@ -39,7 +39,12 @@ public class KafkaService<T> implements Closeable {
 				System.out.println("Chegou " + recordes.count() + " registros");
 
 				for (ConsumerRecord<String, T> item : recordes) {
-					parse.consume(item);
+					try {
+						parse.consume(item);
+					} catch (Exception e) {
+						// Por enquanto só iremos jagar no log.
+						e.printStackTrace();
+					}
 				}
 			}
 		}

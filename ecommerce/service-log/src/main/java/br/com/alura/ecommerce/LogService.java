@@ -1,6 +1,5 @@
 package br.com.alura.ecommerce;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -12,15 +11,12 @@ public class LogService {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void main(String[] args) throws InterruptedException {
-		Map<String, String> map = new HashMap<String, String>();
-		map.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-		
 		try (KafkaService kaflaService = new KafkaService(
 				LogService.class.getSimpleName(), 
 				Pattern.compile("LOJA.*"), 
 				new LogService()::parse,
 				String.class,
-				map)) {
+				Map.of(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName()))) {
 			kaflaService.run();
 		}
 	}

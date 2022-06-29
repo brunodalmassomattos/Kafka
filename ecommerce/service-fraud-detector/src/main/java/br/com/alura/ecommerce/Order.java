@@ -13,4 +13,16 @@ public class Order {
 		this.amount = amount;
 	}
 
+	public String getUserId() {
+		return userId;
+	}
+
+	public String getOrderId() {
+		return orderId;
+	}
+
+	public BigDecimal getAmount() {
+		return amount;
+	}
+
 }

@@ -1,6 +1,6 @@
 package br.com.alura.ecommerce;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
@@ -13,7 +13,7 @@ public class EmailService {
 				"LOJA_EMAIL_PEDIDO", 
 				new EmailService()::parse,
 				Email.class,
-				new HashMap<>())) {
+				Map.of())) {
 			kafkaService.run();
 		}
 	}
