@@ -36,10 +36,10 @@ public class FraudDetectorService {
 			Order ordem = registro.value();
 			if (new Random().nextBoolean()) {
 				System.out.println("Ordem processada - Sem Fraude \n");
-				orderDispatcher.send("LOJA_PEDIDO_APROVADO", ordem.getUserId(), ordem);
+				orderDispatcher.send("LOJA_PEDIDO_APROVADO", ordem.getEmail(), ordem);
 			} else {
 				System.out.println("Ordem processada - Fraude - Atenção \n");
-				orderDispatcher.send("LOJA_PEDIDO_REPROVADO", ordem.getUserId(), ordem);
+				orderDispatcher.send("LOJA_PEDIDO_REPROVADO", ordem.getEmail(), ordem);
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

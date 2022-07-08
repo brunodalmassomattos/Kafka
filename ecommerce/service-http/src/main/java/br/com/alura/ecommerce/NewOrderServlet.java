@@ -1,25 +1,40 @@
 package br.com.alura.ecommerce;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
-public class NewOrderMain {
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-	public static void main(String[] args) throws InterruptedException, ExecutionException {
+public class NewOrderServlet extends HttpServlet {
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		try (KafkaDispatcher<Order> orderDispatcher = new KafkaDispatcher<>()) {
 			try (KafkaDispatcher<Email> emailDispatcher = new KafkaDispatcher<>()) {
-				String email = getSaltString() + "@email.com";
-
-				for (int i = 0; i < 10; i++) {
+				try {
+//					String email = getSaltString() + "@email.com";
+					String email = req.getParameter("email");
+					
+//					BigDecimal amount = new BigDecimal((Math.random() * 5000) + 1);
+					BigDecimal ticketPrice = new BigDecimal(200);
+					BigDecimal amount = new BigDecimal(req.getParameter("qtd")).multiply(ticketPrice);
+					
 					String orderID = UUID.randomUUID().toString();
-					BigDecimal amount = new BigDecimal((Math.random() * 5000) + 1);
-
 					Order order = new Order(orderID, amount, email);
+					
 					orderDispatcher.send("LOJA_NOVO_PEDIDO", email, order);
-
 					emailDispatcher.send("LOJA_EMAIL_PEDIDO", email, new Email());
+					
+					resp.setStatus(HttpServletResponse.SC_OK);
+					resp.getWriter().println("Nova ordem enviada!");
+				} catch (InterruptedException | ExecutionException e) {
+					e.printStackTrace();
 				}
 			}
 		}
@@ -36,5 +51,4 @@ public class NewOrderMain {
 
 		return salt.toString();
 	}
-
 }
